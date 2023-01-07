@@ -1,51 +1,26 @@
 package stackx.cookbook.api.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@Table(name = "tb_recipe")
+@Entity @Table(name = "tb_recipe") @Getter @Setter
 public class Recipe {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_recipe")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false, nullable = false)
     private Integer idRecipe;
 
+    private String title;
+
+    @Column(updatable = true, length = 2000)
     private String img;
 
+    @Column(updatable = true, length = 4000)
     private String ingredients;
 
+    @Column(updatable = true, length = 4000)
     private String preparationMethod;
 
-    public Integer getIdRecipe() {
-        return idRecipe;
-    }
-
-    public void setIdRecipe(Integer idRecipe) {
-        this.idRecipe = idRecipe;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public String getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public String getPreparationMethod() {
-        return preparationMethod;
-    }
-
-    public void setPreparationMethod(String preparationMethod) {
-        this.preparationMethod = preparationMethod;
-    }
 }

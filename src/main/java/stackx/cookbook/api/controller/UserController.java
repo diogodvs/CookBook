@@ -1,10 +1,11 @@
 package stackx.cookbook.api.controller;
 
-import jakarta.persistence.PostUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import stackx.cookbook.api.model.Recipe;
 import stackx.cookbook.api.model.User;
+import stackx.cookbook.api.repository.RecipesRepository;
 import stackx.cookbook.api.repository.UserRepository;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     UserRepository userRep;
+
+    RecipesRepository recRep;
 
     // CRUD
 
@@ -29,7 +32,9 @@ public class UserController {
     //READ all users
     @GetMapping
     public List<User> readUsers(){
-        return userRep.findAll();
+
+     return userRep.findAll();
+
     }
 
     //READ one User by Id

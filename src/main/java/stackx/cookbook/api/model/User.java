@@ -1,14 +1,17 @@
 package stackx.cookbook.api.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@Table(name = "tb_user")
+import java.io.Serializable;
+import java.util.List;
+
+@Entity @Table(name = "tb_user") @Getter @Setter
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
     private Integer idUser;
 
     private String login;
@@ -17,47 +20,14 @@ public class User {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id_recipe")
-    private Recipe recipe;
+    @Column(updatable = true, length = 10000, nullable = false)
+    @JoinTable(name="user-id_recipes",
+            joinColumns={@JoinColumn(name="user_id",
+                    referencedColumnName="idUser")},
+            inverseJoinColumns={@JoinColumn(name="recipe_id",
+                    referencedColumnName="idRecipe")})
+    @OneToMany
+    private List<Recipe> recipes;
 
-    public Recipe getRecipe() {
-        return recipe;
-    }
 
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
-
-    public Integer getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

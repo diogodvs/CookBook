@@ -1,32 +1,48 @@
 package stackx.cookbook.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import stackx.cookbook.api.model.Recipe;
+import stackx.cookbook.api.model.User;
 import stackx.cookbook.api.repository.RecipesRepository;
+import stackx.cookbook.api.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.aspectj.weaver.UnresolvedType.add;
+
 @RestController
 @RequestMapping("/api/recipes")
-public class RecipeController  {
+public class RecipeController {
 
     @Autowired
     RecipesRepository recRep;
 
+    @Autowired
+    UserRepository userRep;
+
     //CRUD
 
     //CREATE
-    @PostMapping
-    public Recipe saveRecipe(@RequestBody Recipe recipe){
-        return recRep.save(recipe);
+    @PostMapping("/{id}")
+    public ResponseEntity saveRecipe(@RequestBody Recipe recipe, @PathVariable Integer id) {
+        Optional<User> optionalUser = userRep.findById(id);
+        if (optionalUser.isPresent()) {
+            userRep.findById(id).get().setRecipes(Collections.singletonList(recRep.save(recipe)));
+            return ResponseEntity.ok(optionalUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
+
     //READ
-    @GetMapping
-    public List<Recipe> getAllRecipes(){
-        return recRep.findAll();
+    @GetMapping("/user/{id}")
+    public List<Recipe> getAllRecipes(@PathVariable Integer id){
+      return userRep.findById(id).get().getRecipes();
     }
 
     @GetMapping("/{id}")
@@ -35,7 +51,7 @@ public class RecipeController  {
     }
 
     //UPDATE
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public Recipe updateRecipe(@PathVariable Integer id, @RequestBody Recipe recipe) {
         return recRep.save(recipe);
     }
