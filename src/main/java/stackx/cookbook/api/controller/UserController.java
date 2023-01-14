@@ -3,7 +3,6 @@ package stackx.cookbook.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import stackx.cookbook.api.model.Recipe;
 import stackx.cookbook.api.model.User;
 import stackx.cookbook.api.repository.RecipesRepository;
 import stackx.cookbook.api.repository.UserRepository;
@@ -32,7 +31,6 @@ public class UserController {
     //READ all users
     @GetMapping
     public List<User> readUsers(){
-
      return userRep.findAll();
 
     }

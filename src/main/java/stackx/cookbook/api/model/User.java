@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity @Table(name = "tb_user") @Getter @Setter
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +21,8 @@ public class User {
     private String name;
 
     @Column(updatable = true, length = 10000, nullable = false)
-    @JoinTable(name="user-id_recipes",
-            joinColumns={@JoinColumn(name="user_id",
-                    referencedColumnName="idUser")},
-            inverseJoinColumns={@JoinColumn(name="recipe_id",
-                    referencedColumnName="idRecipe")})
     @OneToMany
-    private List<Recipe> recipes;
+    private List<Recipe> recipesList;
 
 
 }

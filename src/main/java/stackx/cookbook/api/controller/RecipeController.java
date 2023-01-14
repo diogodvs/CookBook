@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.aspectj.weaver.UnresolvedType.add;
-
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {
@@ -21,33 +19,30 @@ public class RecipeController {
     @Autowired
     RecipesRepository recRep;
 
+    UserController uc;
     @Autowired
     UserRepository userRep;
 
     //CRUD
 
     //CREATE
-    @PostMapping("/{id}")
-    public ResponseEntity saveRecipe(@RequestBody Recipe recipe, @PathVariable Integer id) {
-        Optional<User> optionalUser = userRep.findById(id);
-        if (optionalUser.isPresent()) {
-            userRep.findById(id).get().setRecipes(Collections.singletonList(recRep.save(recipe)));
-            return ResponseEntity.ok(optionalUser);
-        } else {
-            return ResponseEntity.notFound().build();
+    @PostMapping("/user={idUser}")
+    public String saveRecipe(@RequestBody Recipe recipe, @PathVariable("idUser") Integer idUser) {
+        Optional<User> userTemporary = userRep.findById(idUser);
+        if(userTemporary.isPresent()) {
+            List<Recipe> recipesListTemporary = userTemporary.get().getRecipesList();
+            recipesListTemporary.add(recipe);
+            userTemporary.get().setRecipesList(recipesListTemporary);
+            recRep.save(recipe);
+            return "Recipe Save Sucessfully.";
         }
+        return "User not found.";
     }
 
-
-    //READ
-    @GetMapping("/user/{id}")
-    public List<Recipe> getAllRecipes(@PathVariable Integer id){
-      return userRep.findById(id).get().getRecipes();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Recipe> getRecipeById(@PathVariable Integer id){
-        return recRep.findById(id);
+    // READ
+    @GetMapping
+    public List<Recipe> getAllRecipes(){
+        return recRep.findAll();
     }
 
     //UPDATE
