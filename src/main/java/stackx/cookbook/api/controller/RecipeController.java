@@ -19,7 +19,6 @@ public class RecipeController {
     @Autowired
     RecipesRepository recRep;
 
-    UserController uc;
     @Autowired
     UserRepository userRep;
 
@@ -27,16 +26,16 @@ public class RecipeController {
 
     //CREATE
     @PostMapping("/user={idUser}")
-    public String saveRecipe(@RequestBody Recipe recipe, @PathVariable("idUser") Integer idUser) {
+    public ResponseEntity saveRecipe(@RequestBody Recipe recipe, @PathVariable("idUser") Integer idUser) {
         Optional<User> userTemporary = userRep.findById(idUser);
         if(userTemporary.isPresent()) {
             List<Recipe> recipesListTemporary = userTemporary.get().getRecipesList();
             recipesListTemporary.add(recipe);
             userTemporary.get().setRecipesList(recipesListTemporary);
             recRep.save(recipe);
-            return "Recipe Save Sucessfully.";
+            return ResponseEntity.ok(recipe);
         }
-        return "User not found.";
+        return ResponseEntity.notFound().build();
     }
 
     // READ
@@ -45,8 +44,18 @@ public class RecipeController {
         return recRep.findAll();
     }
 
+    @GetMapping("/user={idUser}/recipe={id}")
+    public ResponseEntity getRecipeById(@PathVariable Integer id, @PathVariable Integer idUser){
+        Optional<User> optionalUser = userRep.findById(idUser);
+        if (optionalUser.isPresent()){
+            Recipe entityRecipe = optionalUser.get().getRecipesList().get(id-1);
+            return ResponseEntity.ok(entityRecipe);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     //UPDATE
-    @PutMapping("/{id}")
+    @PutMapping("/user={idUser}/recipe={id}")
     public ResponseEntity updateRecipe(@PathVariable Integer id, @RequestBody Recipe updatedRecipe) {
         Optional<Recipe> optionalRecipe = recRep.findById(id);
          if (optionalRecipe.isPresent()){
@@ -63,7 +72,7 @@ public class RecipeController {
     }
 
     //DELETE
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user={idUser}/recipe={id}")
     public void deleteRecipebyId(@PathVariable Integer id){
         recRep.deleteById(id);
 
