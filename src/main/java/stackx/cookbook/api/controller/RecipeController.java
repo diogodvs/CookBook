@@ -47,8 +47,19 @@ public class RecipeController {
 
     //UPDATE
     @PutMapping("/{id}")
-    public Recipe updateRecipe(@PathVariable Integer id, @RequestBody Recipe recipe) {
-        return recRep.save(recipe);
+    public ResponseEntity updateRecipe(@PathVariable Integer id, @RequestBody Recipe updatedRecipe) {
+        Optional<Recipe> optionalRecipe = recRep.findById(id);
+         if (optionalRecipe.isPresent()){
+            Recipe entityRecipe = optionalRecipe.get();
+            entityRecipe.setImg(updatedRecipe.getImg());
+            entityRecipe.setTitle(updatedRecipe.getTitle());
+            entityRecipe.setIngredients(updatedRecipe.getIngredients());
+            entityRecipe.setPreparationMethod(updatedRecipe.getPreparationMethod());
+            recRep.save(entityRecipe);
+
+            return ResponseEntity.ok(entityRecipe);
+      }
+         return ResponseEntity.notFound().build();
     }
 
     //DELETE
