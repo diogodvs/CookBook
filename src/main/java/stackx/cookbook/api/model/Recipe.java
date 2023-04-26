@@ -17,8 +17,12 @@ public class Recipe implements Serializable {
 
     private String title;
 
-    @Column(updatable = true, length = 2000)
-    private String img;
+    @Column(nullable = false, updatable = true)
+    private String category;
+
+    @OneToOne
+    @JoinColumn(updatable = true)
+    private Image img;
 
     @Column(updatable = true, length = 4000)
     private String ingredients;
