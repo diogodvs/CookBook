@@ -1,17 +1,19 @@
 package stackx.cookbook.api.model;
 
-
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter @Entity @Table(name = "tb_image")
+@Entity @Getter @Setter @Table(name = "tb_images")
 public class Image {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "UrlImage")
-    private byte[] urlImg;
+    @Lob
+    private byte[] content;
+
+    private String nameFile;
+
 }
