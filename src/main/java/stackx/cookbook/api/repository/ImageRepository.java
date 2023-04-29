@@ -5,5 +5,6 @@ import org.springframework.stereotype.Repository;
 import stackx.cookbook.api.model.Image;
 
 @Repository
-public interface ImageRepository extends JpaRepository<Image, Long> {
+public interface ImageRepository  extends JpaRepository<Image, Long> {
+
 }

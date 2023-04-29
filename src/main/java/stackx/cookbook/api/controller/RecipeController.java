@@ -1,15 +1,20 @@
 package stackx.cookbook.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import stackx.cookbook.api.model.Image;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import stackx.cookbook.api.model.Recipe;
 import stackx.cookbook.api.model.User;
-import stackx.cookbook.api.repository.ImageRepository;
 import stackx.cookbook.api.repository.RecipesRepository;
 import stackx.cookbook.api.repository.UserRepository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,18 +28,21 @@ public class RecipeController {
     @Autowired
     UserRepository userRep;
 
-
+    private static String UPLOADED_FOLDER = "F://temp//";
 
     //CRUD
 
     //CREATE
     @PostMapping("/user={idUser}")
     public ResponseEntity saveRecipe(@RequestBody Recipe recipe,
-                                     @PathVariable("idUser") Integer idUser) {
-        Optional<User> userTemporary = userRep.findById(idUser);
-        if(userTemporary.isPresent()) {
-            List<Recipe> recipesListTemporary = userTemporary.get().getRecipesList();
+                                     @PathVariable("idUser") Integer idUser,
+                                     @RequestParam("picture") MultipartFile file) throws IOException {
 
+        Optional<User> userTemporary = userRep.findById(idUser);
+
+        if(userTemporary.isPresent()) {
+
+            List<Recipe> recipesListTemporary = userTemporary.get().getRecipesList();
             recipesListTemporary.add(recipe);
             userTemporary.get().setRecipesList(recipesListTemporary);
             recRep.save(recipe);
@@ -81,6 +89,5 @@ public class RecipeController {
     public void deleteRecipebyId(@PathVariable Integer id) {
         recRep.deleteById(id);
     }
-
 
 }

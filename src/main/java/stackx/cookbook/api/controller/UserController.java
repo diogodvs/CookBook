@@ -16,8 +16,6 @@ public class UserController {
     @Autowired
     UserRepository userRep;
 
-    RecipesRepository recRep;
-
     // CRUD
 
     // CREATE
@@ -64,6 +62,23 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUserbyId(@PathVariable Integer id){
         userRep.deleteById(id);
+    }
+
+    //LOGIN
+
+    @RequestMapping(value = "/login" , method = RequestMethod.GET)
+    public String Login(@RequestParam String login, @RequestParam String password ){
+        User user = new User();
+        List<User> userListTemporary = userRep.findAll();
+
+        if (userListTemporary.contains(login)){
+            user.setIdUser(userListTemporary.indexOf(login));
+
+            if (password == user.getPassword()){
+                return " user id = " + user.getIdUser();
+            }
+        }
+            return " id nao encontrado";
     }
 
 }

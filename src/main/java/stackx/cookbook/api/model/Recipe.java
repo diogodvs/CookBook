@@ -3,6 +3,7 @@ package stackx.cookbook.api.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 
@@ -20,9 +21,8 @@ public class Recipe implements Serializable {
     @Column(nullable = false, updatable = true)
     private String category;
 
-    @OneToOne
-    @JoinColumn(updatable = true)
-    private Image img;
+    @Column(updatable = true)
+    private byte[] img;
 
     @Column(updatable = true, length = 4000)
     private String ingredients;
