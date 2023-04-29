@@ -11,9 +11,10 @@ import stackx.cookbook.api.model.Image;
 import stackx.cookbook.api.repository.ImageRepository;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/image")
 public class ImageController {
 
     @Autowired
@@ -29,7 +30,7 @@ public class ImageController {
         return imgRep.save(dbImage).getId();
     }
 
-    @GetMapping(value = "/image/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
     ByteArrayResource downloadImagebyId(@PathVariable Long imageId) {
         byte[] image = imgRep.findById(imageId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
@@ -37,5 +38,24 @@ public class ImageController {
 
         return new ByteArrayResource(image);
     }
+
+    @PutMapping("/{imageId}")
+    ByteArrayResource updateImagebyId(@PathVariable Long imageId, @RequestParam("img") MultipartFile multipartImage) throws IOException {
+        Optional<Image> newImage = imgRep.findById(imageId);
+
+        newImage.get().setContent(multipartImage.getBytes());
+        newImage.get().setNameFile(multipartImage.getName());
+
+        imgRep.save(newImage.get());
+
+
+        byte[] image = imgRep.findById(imageId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .getContent();
+
+        return new ByteArrayResource(image);
+
+    }
+
 
 }
