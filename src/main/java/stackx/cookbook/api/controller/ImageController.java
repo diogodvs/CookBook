@@ -40,7 +40,7 @@ public class ImageController {
     }
 
     @PutMapping("/{imageId}")
-    ByteArrayResource updateImagebyId(@PathVariable Long imageId, @RequestParam("img") MultipartFile multipartImage) throws IOException {
+    Long updateImagebyId(@PathVariable Long imageId, @RequestParam("img") MultipartFile multipartImage) throws IOException {
         Optional<Image> newImage = imgRep.findById(imageId);
 
         newImage.get().setContent(multipartImage.getBytes());
@@ -48,12 +48,7 @@ public class ImageController {
 
         imgRep.save(newImage.get());
 
-
-        byte[] image = imgRep.findById(imageId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
-                .getContent();
-
-        return new ByteArrayResource(image);
+        return imgRep.findById(imageId).get().getId();
 
     }
 
