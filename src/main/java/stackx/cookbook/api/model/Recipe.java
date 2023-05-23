@@ -20,8 +20,7 @@ public class Recipe implements Serializable {
     @Column(nullable = false, updatable = true)
     private String category;
 
-    @JoinColumn(updatable = true)
-    private Long imgId;
+    private String nameImage;
 
     @Column(updatable = true, length = 4000)
     private String ingredients;
